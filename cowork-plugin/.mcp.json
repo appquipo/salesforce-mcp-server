@@ -1,8 +1,11 @@
 {
   "mcpServers": {
     "salesforce": {
-      "type": "http",
-      "url": "https://YOUR-SERVER.com/mcp.php"
+      "type": "stdio",
+      "command": "php",
+      "args": [
+        "mcp-server.php"
+      ]
     }
   }
 }
