@@ -1,0 +1,39 @@
+{
+  "name": "emizentech-salesforce",
+  "description": "Salesforce CRM plugins by Emizentech — search, create, and manage leads, contacts, accounts, and opportunities through natural conversation.",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Emizentech",
+    "email": "info@emizentech.com"
+  },
+  "plugins": [
+    {
+      "name": "salesforce-crm",
+      "source": "./cowork-plugin",
+      "description": "Connect your Salesforce CRM to Claude. Search, create, and manage leads, contacts, accounts, and opportunities. Log activities, run SOQL queries, and explore your Salesforce schema.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Emizentech"
+      },
+      "homepage": "https://github.com/appquipo/salesforce-mcp-server",
+      "license": "MIT",
+      "keywords": [
+        "salesforce",
+        "crm",
+        "leads",
+        "sales",
+        "mcp"
+      ],
+      "category": "sales",
+      "tags": [
+        "salesforce",
+        "crm",
+        "leads",
+        "contacts",
+        "accounts",
+        "opportunities",
+        "sales"
+      ]
+    }
+  ]
+}
