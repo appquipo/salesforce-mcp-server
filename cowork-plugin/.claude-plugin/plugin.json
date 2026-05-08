@@ -1,0 +1,20 @@
+{
+  "name": "salesforce-crm",
+  "description": "Connect your Salesforce CRM to Claude. Search, create, and manage leads, contacts, accounts, and opportunities. Log activities, run SOQL queries, and explore your Salesforce schema — all through natural conversation.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Emizentech",
+    "email": "info@emizentech.com"
+  },
+  "homepage": "https://github.com/appquipo/salesforce-mcp-server",
+  "license": "MIT",
+  "keywords": [
+    "salesforce",
+    "crm",
+    "leads",
+    "sales",
+    "mcp"
+  ],
+  "mcpServers": "./.mcp.json",
+  "skills": "./skills"
+}
