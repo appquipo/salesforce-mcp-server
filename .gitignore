@@ -1,0 +1,6 @@
+.env
+*.log
+/vendor/
+.DS_Store
+Thumbs.db
+sf_mcp_session_*.json
