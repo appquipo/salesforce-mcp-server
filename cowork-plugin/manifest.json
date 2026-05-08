@@ -2,7 +2,7 @@
   "name": "salesforce-crm",
   "displayName": "Salesforce CRM",
   "version": "1.0.0",
-  "description": "Connect your Salesforce CRM to Claude. Search, create, and manage leads, contacts, accounts, and opportunities. Log activities, run SOQL queries, and explore your Salesforce schema — all through natural conversation.",
+  "description": "Connect your Salesforce CRM to Claude. Search, create, and manage leads, contacts, accounts, and opportunities. Log activities, run SOQL queries, and more — all without leaving Claude.",
   "author": "Emizentech",
   "homepage": "https://github.com/appquipo/salesforce-mcp-server",
   "license": "MIT",
@@ -19,9 +19,9 @@
     "productivity"
   ],
   "setup": {
-    "instructions": "Deploy mcp.php to your PHP server, configure Salesforce credentials as environment variables, then update the URL in .mcp.json to point to your server.",
+    "instructions": "Install PHP 8.0+ with cURL extension, then configure your Salesforce credentials as environment variables (SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN or SF_CLIENT_ID, SF_CLIENT_SECRET). No server deployment needed — the plugin runs locally.",
     "requirements": [
-      "PHP 8.0+ web server with cURL",
+      "PHP 8.0+ with cURL extension (installed locally)",
       "Salesforce org (Production, Sandbox, or Developer Edition)",
       "Salesforce credentials (Username/Password/Token OR OAuth Connected App)"
     ]
