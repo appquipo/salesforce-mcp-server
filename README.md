@@ -2,25 +2,58 @@
 
 Connect your Salesforce CRM to Claude — search, create, and manage leads, contacts, accounts, and opportunities through natural conversation.
 
-## Quick Start (Plug & Play — Recommended)
+## Quick Start (Plug & Play)
 
-**No setup required.** Connect to the hosted MCP server instantly.
-
-### Option 1: Install the Plugin (Easiest)
+### Step 1: Install the Plugin
 
 1. Download [salesforce-crm.plugin](https://github.com/appquipo/salesforce-mcp-server/releases/latest/download/salesforce-crm.plugin)
 2. Double-click to install in Claude Desktop / Cowork
-3. Done! Start chatting with your Salesforce data
 
-### Option 2: Add to Claude Code
+### Step 2: Set Up Your Salesforce Credentials
 
-Run in your terminal:
+The plugin connects to a hosted MCP server. You need to provide your own Salesforce credentials as environment variables.
+
+**Mac/Linux** — add these to your `~/.zshrc` (or `~/.bashrc`):
+
+```bash
+export SF_USERNAME="your-salesforce-email@example.com"
+export SF_PASSWORD="your-salesforce-password"
+export SF_SECURITY_TOKEN="your-security-token"
+export SF_LOGIN_URL="https://login.salesforce.com"
+```
+
+Then run:
+
+```bash
+source ~/.zshrc
+```
+
+**Windows** — set via System Properties > Environment Variables:
+
+- `SF_USERNAME` = your Salesforce login email
+- `SF_PASSWORD` = your Salesforce password
+- `SF_SECURITY_TOKEN` = your security token
+- `SF_LOGIN_URL` = `https://login.salesforce.com`
+
+> **How to get your Security Token:** In Salesforce, go to Settings > My Personal Information > Reset My Security Token. The token will be emailed to you.
+
+> **Sandbox orgs:** Use `https://test.salesforce.com` for SF_LOGIN_URL.
+
+### Step 3: Restart Claude
+
+After setting the environment variables, **restart Claude Desktop / Cowork** and start chatting with your Salesforce data!
+
+---
+
+## Alternative Setup Methods
+
+### Add to Claude Code
 
 ```bash
 claude mcp add salesforce --url https://mcp-social-crm.ezxdemo.com/sse
 ```
 
-### Option 3: Manual MCP Config
+### Manual MCP Config
 
 Add this to your `.mcp.json` or Claude Desktop config:
 
@@ -28,46 +61,55 @@ Add this to your `.mcp.json` or Claude Desktop config:
 {
   "mcpServers": {
     "salesforce": {
-      "url": "https://mcp-social-crm.ezxdemo.com/sse"
+      "type": "sse",
+      "url": "https://mcp-social-crm.ezxdemo.com/sse",
+      "headers": {
+        "X-SF-Username": "${SF_USERNAME}",
+        "X-SF-Password": "${SF_PASSWORD}",
+        "X-SF-Security-Token": "${SF_SECURITY_TOKEN}",
+        "X-SF-Login-URL": "${SF_LOGIN_URL}"
+      }
     }
   }
 }
 ```
-
-That's it — no Python, no dependencies, no API keys to configure.
 
 ---
 
 ## Available Tools (13 Tools)
 
 ### Lead Management
+
 | Tool | Description |
 |------|-------------|
-| `sf_search_leads` | Search leads by name, email, company, or phone |
-| `sf_get_lead` | Get full lead details by ID |
-| `sf_create_lead` | Create a new lead (LastName & Company required) |
-| `sf_update_lead` | Update fields on an existing lead |
-| `sf_delete_lead` | Permanently delete a lead |
-| `sf_change_owner` | Reassign lead to a different owner |
+| sf_search_leads | Search leads by name, email, company, or phone |
+| sf_get_lead | Get full lead details by ID |
+| sf_create_lead | Create a new lead (LastName & Company required) |
+| sf_update_lead | Update fields on an existing lead |
+| sf_delete_lead | Permanently delete a lead |
+| sf_change_owner | Reassign lead to a different owner |
 
 ### Activities
+
 | Tool | Description |
 |------|-------------|
-| `sf_log_activity` | Log calls, emails, meetings, or notes on a lead |
+| sf_log_activity | Log calls, emails, meetings, or notes on a lead |
 
 ### CRM Search
+
 | Tool | Description |
 |------|-------------|
-| `sf_search_contacts` | Find contacts by name or email |
-| `sf_search_accounts` | Find accounts by name |
-| `sf_search_opportunities` | Find opportunities by name or account |
-| `sf_search_users` | Find Salesforce users (for owner assignment) |
+| sf_search_contacts | Find contacts by name or email |
+| sf_search_accounts | Find accounts by name |
+| sf_search_opportunities | Find opportunities by name or account |
+| sf_search_users | Find Salesforce users (for owner assignment) |
 
 ### Schema & Query
+
 | Tool | Description |
 |------|-------------|
-| `sf_describe_object` | List all fields on any Salesforce object |
-| `sf_soql_query` | Run read-only SOQL SELECT queries |
+| sf_describe_object | List all fields on any Salesforce object |
+| sf_soql_query | Run read-only SOQL SELECT queries |
 
 ---
 
@@ -113,7 +155,7 @@ EOF
 python3 run-http.py
 ```
 
-The server runs on port 8765. Point your MCP config to `http://your-server:8765/sse`.
+The server runs on port 8765 and supports per-user credentials via `X-SF-*` HTTP headers. Point your MCP config to `http://your-server:8765/sse`.
 
 **Nginx reverse proxy example:**
 
@@ -139,91 +181,26 @@ location /messages/ {
 
 Requires PHP 8.0+ — just drop `mcp.php` on any web server.
 
-```bash
-# 1. Copy mcp.php to your web root
-cp mcp.php /var/www/html/
-
-# 2. Set environment variables in .env
-SF_USERNAME=your-username@example.com
-SF_PASSWORD=your-password
-SF_SECURITY_TOKEN=your-security-token
-MCP_API_KEY=your-secret-api-key
-
-# 3. Point your MCP config to the URL
-```
-
-```json
-{
-  "mcpServers": {
-    "salesforce": {
-      "url": "https://your-domain.com/mcp.php",
-      "headers": {
-        "Authorization": "Bearer your-secret-api-key"
-      }
-    }
-  }
-}
-```
-
 ### Local Mode (Stdio Transport)
 
-Run directly on your machine without a server:
-
-```bash
-# 1. Clone and install
-git clone https://github.com/appquipo/salesforce-mcp-server.git
-pip install pydantic "mcp[cli]"
-
-# 2. Use this .mcp.json
-```
-
-```json
-{
-  "mcpServers": {
-    "salesforce": {
-      "command": "python3",
-      "args": ["path/to/mcp-server.py"],
-      "env": {
-        "SF_USERNAME": "your-username@example.com",
-        "SF_PASSWORD": "your-password",
-        "SF_SECURITY_TOKEN": "your-security-token",
-        "SF_LOGIN_URL": "https://login.salesforce.com"
-      }
-    }
-  }
-}
-```
+Run directly on your machine without a server — see the repo files for configuration examples.
 
 ---
 
-## Salesforce Auth Methods
+## Salesforce Auth
 
-### 1. Username + Password + Security Token (Default)
+### Username + Password + Security Token (Default)
 
-Set these environment variables:
 - `SF_USERNAME` — Your Salesforce username
 - `SF_PASSWORD` — Your Salesforce password
 - `SF_SECURITY_TOKEN` — Your security token ([how to get it](https://help.salesforce.com/s/articleView?id=sf.user_security_token.htm))
 - `SF_LOGIN_URL` — `https://login.salesforce.com` (production) or `https://test.salesforce.com` (sandbox)
 
-### 2. OAuth 2.0 Client Credentials (Connected App)
+### OAuth 2.0 Client Credentials (Connected App)
 
-Set these instead:
 - `SF_CLIENT_ID` — Connected App consumer key
 - `SF_CLIENT_SECRET` — Connected App consumer secret
 - `SF_LOGIN_URL` — Your Salesforce login URL
-
----
-
-## Cowork Plugin Installation
-
-For Claude Desktop Cowork mode:
-
-```bash
-claude plugin install https://github.com/appquipo/salesforce-mcp-server
-```
-
-Or download `salesforce-crm.plugin` from [Releases](https://github.com/appquipo/salesforce-mcp-server/releases) and double-click to install.
 
 ---
 
@@ -231,4 +208,4 @@ Or download `salesforce-crm.plugin` from [Releases](https://github.com/appquipo/
 
 MIT License — see [LICENSE](LICENSE) for details.
 
-Built by [Appquipo](https://github.com/appquipo) / [Emizentech](https://emizentech.com)
+**Built by [Appquipo](https://appquipo.com) / [Emizentech](https://emizentech.com)**
