@@ -6,42 +6,46 @@ Connect your Salesforce CRM to Claude — search, create, and manage leads, cont
 
 ### Step 1: Install the Plugin
 
-1. Download [salesforce-crm.plugin](https://github.com/appquipo/salesforce-mcp-server/releases/latest/download/salesforce-crm.plugin)
-2. Double-click to install in Claude Desktop / Cowork
+1. Download `salesforce-crm.plugin` from the [latest release](https://github.com/appquipo/salesforce-mcp-server/releases/latest)
+2. Double-click the downloaded file to install in Claude Desktop / Cowork
 
 ### Step 2: Set Up Your Salesforce Credentials
 
-The plugin connects to a hosted MCP server. You need to provide your own Salesforce credentials as environment variables.
+**No terminal or coding required!** Just start a new chat in Claude and say:
 
-**Mac/Linux** — add these to your `~/.zshrc` (or `~/.bashrc`):
+> "I want to connect my Salesforce account"
 
-```bash
-export SF_USERNAME="your-salesforce-email@example.com"
-export SF_PASSWORD="your-salesforce-password"
-export SF_SECURITY_TOKEN="your-security-token"
-export SF_LOGIN_URL="https://login.salesforce.com"
-```
+Claude will walk you through it step by step:
+1. Ask for your **Salesforce username** (your login email)
+2. Ask for your **Salesforce password**
+3. Ask for your **Security Token** — Claude will explain how to get it from Salesforce
+4. Ask for your **Login URL** — usually `https://login.salesforce.com`
 
-Then run:
+Claude will then generate a one-click setup script that configures everything automatically. Just double-click the script, restart Claude, and you're connected!
 
-```bash
-source ~/.zshrc
-```
+> **How to get your Security Token:** In Salesforce, click your profile icon → Settings → search "Reset My Security Token" → click Reset. The token will be emailed to you.
 
-**Windows** — set via System Properties > Environment Variables:
+> **Sandbox orgs:** Use `https://test.salesforce.com` as the Login URL.
 
-- `SF_USERNAME` = your Salesforce login email
-- `SF_PASSWORD` = your Salesforce password
-- `SF_SECURITY_TOKEN` = your security token
-- `SF_LOGIN_URL` = `https://login.salesforce.com`
+### Step 3: Start Using It
 
-> **How to get your Security Token:** In Salesforce, go to Settings > My Personal Information > Reset My Security Token. The token will be emailed to you.
+After restarting Claude, just chat naturally:
 
-> **Sandbox orgs:** Use `https://test.salesforce.com` for SF_LOGIN_URL.
+- "Search for leads named John"
+- "Show me all opportunities over $50,000"
+- "Create a new lead: Jane Smith at Acme Corp"
+- "Log a call with lead — discussed pricing, follow up next week"
 
-### Step 3: Restart Claude
+---
 
-After setting the environment variables, **restart Claude Desktop / Cowork** and start chatting with your Salesforce data!
+## What's Included
+
+| Category | Tools | Description |
+|----------|-------|-------------|
+| **Lead Management** | `sf_search_leads`, `sf_get_lead`, `sf_create_lead`, `sf_update_lead`, `sf_delete_lead`, `sf_change_owner` | Full lead CRUD + ownership |
+| **Activities** | `sf_log_activity` | Log calls, emails, meetings, notes |
+| **CRM Search** | `sf_search_contacts`, `sf_search_accounts`, `sf_search_opportunities`, `sf_search_users` | Search across all CRM objects |
+| **Schema & Query** | `sf_describe_object`, `sf_soql_query` | Explore fields, run SOQL queries |
 
 ---
 
@@ -74,55 +78,20 @@ Add this to your `.mcp.json` or Claude Desktop config:
 }
 ```
 
----
+### Manual Environment Variables (Advanced)
 
-## Available Tools (13 Tools)
+If you prefer to set credentials manually:
 
-### Lead Management
+**Mac/Linux** — add to `~/.zshrc` or `~/.bashrc`:
+```bash
+export SF_USERNAME="your-salesforce-email@example.com"
+export SF_PASSWORD="your-salesforce-password"
+export SF_SECURITY_TOKEN="your-security-token"
+export SF_LOGIN_URL="https://login.salesforce.com"
+```
+Then run `source ~/.zshrc` and restart Claude.
 
-| Tool | Description |
-|------|-------------|
-| sf_search_leads | Search leads by name, email, company, or phone |
-| sf_get_lead | Get full lead details by ID |
-| sf_create_lead | Create a new lead (LastName & Company required) |
-| sf_update_lead | Update fields on an existing lead |
-| sf_delete_lead | Permanently delete a lead |
-| sf_change_owner | Reassign lead to a different owner |
-
-### Activities
-
-| Tool | Description |
-|------|-------------|
-| sf_log_activity | Log calls, emails, meetings, or notes on a lead |
-
-### CRM Search
-
-| Tool | Description |
-|------|-------------|
-| sf_search_contacts | Find contacts by name or email |
-| sf_search_accounts | Find accounts by name |
-| sf_search_opportunities | Find opportunities by name or account |
-| sf_search_users | Find Salesforce users (for owner assignment) |
-
-### Schema & Query
-
-| Tool | Description |
-|------|-------------|
-| sf_describe_object | List all fields on any Salesforce object |
-| sf_soql_query | Run read-only SOQL SELECT queries |
-
----
-
-## Example Usage
-
-Once connected, just chat naturally with Claude:
-
-- "Search for leads named John"
-- "Show me all opportunities over $50,000"
-- "Create a new lead: Jane Smith at Acme Corp, email jane@acme.com"
-- "Log a call with lead 00Qxx... — discussed pricing, follow up next week"
-- "What custom fields are on the Lead object?"
-- "Run SOQL: SELECT Name, Amount FROM Opportunity WHERE StageName = 'Closed Won'"
+**Windows** — set via System Properties > Environment Variables, then restart Claude.
 
 ---
 
@@ -155,10 +124,9 @@ EOF
 python3 run-http.py
 ```
 
-The server runs on port 8765 and supports per-user credentials via `X-SF-*` HTTP headers. Point your MCP config to `http://your-server:8765/sse`.
+The server runs on port 8765 and supports per-user credentials via `X-SF-*` HTTP headers.
 
 **Nginx reverse proxy example:**
-
 ```nginx
 location /sse {
     proxy_pass http://127.0.0.1:8765/sse;
@@ -190,14 +158,12 @@ Run directly on your machine without a server — see the repo files for configu
 ## Salesforce Auth
 
 ### Username + Password + Security Token (Default)
-
 - `SF_USERNAME` — Your Salesforce username
 - `SF_PASSWORD` — Your Salesforce password
 - `SF_SECURITY_TOKEN` — Your security token ([how to get it](https://help.salesforce.com/s/articleView?id=sf.user_security_token.htm))
 - `SF_LOGIN_URL` — `https://login.salesforce.com` (production) or `https://test.salesforce.com` (sandbox)
 
 ### OAuth 2.0 Client Credentials (Connected App)
-
 - `SF_CLIENT_ID` — Connected App consumer key
 - `SF_CLIENT_SECRET` — Connected App consumer secret
 - `SF_LOGIN_URL` — Your Salesforce login URL
@@ -208,4 +174,4 @@ Run directly on your machine without a server — see the repo files for configu
 
 MIT License — see [LICENSE](LICENSE) for details.
 
-**Built by [Appquipo](https://appquipo.com) / [Emizentech](https://emizentech.com)**
+Built by [Appquipo](https://appquipo.com) / [Emizentech](https://emizentech.com)
