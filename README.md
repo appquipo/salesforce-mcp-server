@@ -1,27 +1,28 @@
 # CRM Plugins for Claude
 
-Connect your CRM to Claude with a simple plugin install. No coding, no terminal, no git required.
+Connect your CRM to Claude with a simple plugin install. No coding, no terminal — just download, install, and chat.
 
 ## Available Plugins
 
 ### Salesforce CRM
-**[Go to Salesforce plugin >>](https://github.com/appquipo/salesforce-mcp-server/tree/salesforce)**
+**[Download & Instructions >>](https://github.com/appquipo/salesforce-mcp-server/tree/salesforce)**
 
-Download `salesforce-crm.plugin`, install it, set your login details, and start managing your Salesforce from Claude.
+1. Download the plugin file
+2. Double-click to install
+3. Tell Claude: "Connect my Salesforce"
+4. Answer a few questions, restart Claude — done!
 
 ### Odoo CRM
-**[Go to Odoo CRM plugin >>](https://github.com/appquipo/salesforce-mcp-server/tree/odoo-crm)**
+**[Download & Instructions >>](https://github.com/appquipo/salesforce-mcp-server/tree/odoo-crm)**
 
-Download `odoo-crm-remote.plugin`, install it, set your login details, and start managing your Odoo CRM from Claude. Works with any Odoo 17+ instance.
+1. Download the plugin file
+2. Double-click to install
+3. Tell Claude: "Connect my Odoo CRM"
+4. Answer a few questions, restart Claude — done!
 
 ## How It Works
 
-1. **Download** the `.plugin` file for your CRM
-2. **Double-click** to install it in Claude
-3. **Set your login details** (one-time, takes 2 minutes)
-4. **Restart Claude** and start chatting with your CRM
-
-No servers to run, no code to write. Everything connects to our hosted MCP server automatically.
+The plugins connect Claude to your CRM through a hosted server. Your credentials are stored only on your computer and sent securely with each request. Nothing is stored on the server.
 
 ## Questions?
 
