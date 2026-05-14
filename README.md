@@ -1,85 +1,28 @@
-# MCP CRM Servers for Claude
+# CRM Plugins for Claude
 
-Production-ready MCP servers that connect Claude AI to your CRM via SSE (Server-Sent Events). Per-user credentials via HTTP headers - no credentials stored on the server.
+Connect your CRM to Claude with a simple plugin install. No coding, no terminal, no git required.
 
-**Live at:** `https://mcp-social-crm.ezxdemo.com`
+## Available Plugins
 
-## Available Servers
+### Salesforce CRM
+**[Go to Salesforce plugin >>](https://github.com/appquipo/salesforce-mcp-server/tree/salesforce)**
 
-| CRM | Branch | Endpoint | Plugin |
-|-----|--------|----------|--------|
-| **Salesforce** | [`salesforce`](https://github.com/appquipo/salesforce-mcp-server/tree/salesforce) | `/salesforce/sse` | `salesforce-crm.plugin` |
-| **Odoo CRM** | [`odoo-crm`](https://github.com/appquipo/salesforce-mcp-server/tree/odoo-crm) | `/odoo/sse` | `odoo-crm-remote.plugin` |
-
-## Quick Start
-
-Pick your CRM and switch to its branch for full setup instructions:
-
-### Salesforce
-
-```bash
-git clone -b salesforce https://github.com/appquipo/salesforce-mcp-server.git
-```
-
-Or add to your `.mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "salesforce-crm": {
-      "type": "sse",
-      "url": "https://mcp-social-crm.ezxdemo.com/salesforce/sse",
-      "headers": {
-        "X-SF-USERNAME": "${SF_USERNAME}",
-        "X-SF-PASSWORD": "${SF_PASSWORD}",
-        "X-SF-SECURITY-TOKEN": "${SF_SECURITY_TOKEN}",
-        "X-SF-LOGIN-URL": "${SF_LOGIN_URL}"
-      }
-    }
-  }
-}
-```
+Download `salesforce-crm.plugin`, install it, set your login details, and start managing your Salesforce from Claude.
 
 ### Odoo CRM
+**[Go to Odoo CRM plugin >>](https://github.com/appquipo/salesforce-mcp-server/tree/odoo-crm)**
 
-```bash
-git clone -b odoo-crm https://github.com/appquipo/salesforce-mcp-server.git
-```
+Download `odoo-crm-remote.plugin`, install it, set your login details, and start managing your Odoo CRM from Claude. Works with any Odoo 17+ instance.
 
-Or add to your `.mcp.json`:
+## How It Works
 
-```json
-{
-  "mcpServers": {
-    "odoo-crm": {
-      "type": "sse",
-      "url": "https://mcp-social-crm.ezxdemo.com/odoo/sse",
-      "headers": {
-        "X-ODOO-URL": "${ODOO_URL}",
-        "X-ODOO-DB": "${ODOO_DB}",
-        "X-ODOO-USERNAME": "${ODOO_USERNAME}",
-        "X-ODOO-PASSWORD": "${ODOO_PASSWORD}",
-        "X-ODOO-API-KEY": "${ODOO_API_KEY}"
-      }
-    }
-  }
-}
-```
+1. **Download** the `.plugin` file for your CRM
+2. **Double-click** to install it in Claude
+3. **Set your login details** (one-time, takes 2 minutes)
+4. **Restart Claude** and start chatting with your CRM
 
-## Architecture
+No servers to run, no code to write. Everything connects to our hosted MCP server automatically.
 
-Both servers share the same domain with subfolder routing:
+## Questions?
 
-```
-mcp-social-crm.ezxdemo.com (nginx + SSL)
-    |
-    +-- /salesforce/*  -->  port 8765 (Salesforce MCP)
-    |
-    +-- /odoo/*        -->  port 8766 (Odoo CRM MCP)
-```
-
-Each server uses FastMCP with SSE transport and ASGI middleware that reads per-user credentials from HTTP headers. See the individual branch READMEs for details.
-
-## License
-
-MIT
+Open an issue on this repo or reach out to [Appquipo](https://github.com/appquipo).
