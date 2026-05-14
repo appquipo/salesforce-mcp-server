@@ -24,6 +24,7 @@ from urllib.parse import urlencode, quote
 import httpx
 from pydantic import BaseModel, Field, ConfigDict, field_validator
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
 # âââ Configuration (all from environment variables) ââââââââââââââââââââââââ
 SF_USERNAME = os.environ.get("SF_USERNAME", "")
@@ -39,7 +40,7 @@ _file_hash = hashlib.md5(os.path.abspath(__file__).encode()).hexdigest()
 SESSION_CACHE = os.path.join(tempfile.gettempdir(), f"sf_mcp_session_{_file_hash}.json")
 
 # âââ Initialize MCP Server âââââââââââââââââââââââââââââââââââââââââââââââââ
-mcp = FastMCP("salesforce_mcp")
+mcp = FastMCP("salesforce_mcp", transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
 
 
 # âââ Auth Method Detection âââââââââââââââââââââââââââââââââââââââââââââââââ

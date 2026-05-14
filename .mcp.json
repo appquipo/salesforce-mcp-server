@@ -1,8 +1,14 @@
 {
   "mcpServers": {
-    "salesforce": {
-      "type": "http",
-      "url": "https://YOUR-SERVER.com/mcp.php"
+    "salesforce-crm": {
+      "type": "sse",
+      "url": "https://mcp-social-crm.ezxdemo.com/salesforce/sse",
+      "headers": {
+        "X-SF-USERNAME": "${SF_USERNAME}",
+        "X-SF-PASSWORD": "${SF_PASSWORD}",
+        "X-SF-SECURITY-TOKEN": "${SF_SECURITY_TOKEN}",
+        "X-SF-LOGIN-URL": "${SF_LOGIN_URL}"
+      }
     }
   }
 }
