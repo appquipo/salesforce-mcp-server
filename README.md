@@ -2,56 +2,72 @@
 
 Connect your Salesforce CRM to Claude — search, create, and manage leads, contacts, accounts, and opportunities through natural conversation.
 
-## Quick Start (Plug & Play)
+## Quick Start
 
-### Step 1: Install the Plugin
+### 1. Install the Plugin
 
-1. Download `salesforce-crm.plugin` from the [latest release](https://github.com/appquipo/salesforce-mcp-server/releases/latest)
-2. Double-click the downloaded file to install in Claude Desktop / Cowork
+- Download `salesforce-crm.plugin` from the [latest release](https://github.com/appquipo/salesforce-mcp-server/releases/latest)
+- Double-click to install in Claude Desktop / Cowork
 
-### Step 2: Set Up Your Salesforce Credentials
+### 2. Connect Your Salesforce Account
 
-**No terminal or coding required!** Just start a new chat in Claude and say:
+Open a new chat in Claude and say:
 
-> "I want to connect my Salesforce account"
+> **"I want to connect my Salesforce account"**
 
-Claude will walk you through it step by step:
-1. Ask for your **Salesforce username** (your login email)
-2. Ask for your **Salesforce password**
-3. Ask for your **Security Token** — Claude will explain how to get it from Salesforce
-4. Ask for your **Login URL** — usually `https://login.salesforce.com`
+Claude will ask for your credentials one at a time:
 
-Claude will then generate a one-click setup script that configures everything automatically. Just double-click the script, restart Claude, and you're connected!
+1. **Your Salesforce email** (the one you use to log in)
+2. **Your Salesforce password**
+3. **Your Security Token** — Claude will show you exactly how to get this from Salesforce
+4. Claude handles everything else automatically
 
-> **How to get your Security Token:** In Salesforce, click your profile icon → Settings → search "Reset My Security Token" → click Reset. The token will be emailed to you.
+### 3. Restart Claude
 
-> **Sandbox orgs:** Use `https://test.salesforce.com` as the Login URL.
+After Claude sets things up, just **quit Claude (Cmd+Q)** and reopen it. That's it — you're connected!
 
-### Step 3: Start Using It
-
-After restarting Claude, just chat naturally:
-
-- "Search for leads named John"
-- "Show me all opportunities over $50,000"
-- "Create a new lead: Jane Smith at Acme Corp"
-- "Log a call with lead — discussed pricing, follow up next week"
+> **Tip:** If it doesn't connect after restarting, try restarting your Mac once. On some setups, a full reboot is needed for the credentials to take effect.
 
 ---
 
-## What's Included
+## What You Can Do
 
-| Category | Tools | Description |
-|----------|-------|-------------|
-| **Lead Management** | `sf_search_leads`, `sf_get_lead`, `sf_create_lead`, `sf_update_lead`, `sf_delete_lead`, `sf_change_owner` | Full lead CRUD + ownership |
-| **Activities** | `sf_log_activity` | Log calls, emails, meetings, notes |
-| **CRM Search** | `sf_search_contacts`, `sf_search_accounts`, `sf_search_opportunities`, `sf_search_users` | Search across all CRM objects |
-| **Schema & Query** | `sf_describe_object`, `sf_soql_query` | Explore fields, run SOQL queries |
+Once connected, just chat naturally:
+
+- "Search for leads named John"
+- "Create a new lead: Jane Smith at Acme Corp, email jane@acme.com"
+- "Show me all opportunities over $50,000"
+- "Log a call with the lead — discussed pricing, follow up next week"
+- "What custom fields are on the Lead object?"
+- "Run SOQL: SELECT Name, Amount FROM Opportunity WHERE StageName = 'Closed Won'"
+
+### All 13 Tools
+
+| Category | Tools |
+|----------|-------|
+| **Leads** | Search, view, create, update, delete, reassign leads |
+| **Activities** | Log calls, emails, meetings, notes |
+| **CRM Search** | Search contacts, accounts, opportunities, users |
+| **Advanced** | Explore object fields, run SOQL queries |
+
+---
+
+## Troubleshooting
+
+**"Couldn't reach the MCP server"**
+- Make sure you fully quit Claude with **Cmd+Q** (not just close the window) and reopened it
+- Try restarting your Mac — this ensures the credentials are loaded for all apps
+- If your company uses a custom Salesforce URL (like `https://yourcompany.my.salesforce.com`), tell Claude and it will update the connection
+
+**"Tools not showing up"**
+- Go to Claude → Settings → Plugins and check that Salesforce is enabled
+- Try toggling it off and back on, then restart Claude
 
 ---
 
 ## Alternative Setup Methods
 
-### Add to Claude Code
+### Claude Code
 
 ```bash
 claude mcp add salesforce --url https://mcp-social-crm.ezxdemo.com/sse
@@ -59,7 +75,7 @@ claude mcp add salesforce --url https://mcp-social-crm.ezxdemo.com/sse
 
 ### Manual MCP Config
 
-Add this to your `.mcp.json` or Claude Desktop config:
+Add to your `.mcp.json` or Claude Desktop config:
 
 ```json
 {
@@ -78,40 +94,23 @@ Add this to your `.mcp.json` or Claude Desktop config:
 }
 ```
 
-### Manual Environment Variables (Advanced)
-
-If you prefer to set credentials manually:
-
-**Mac/Linux** — add to `~/.zshrc` or `~/.bashrc`:
-```bash
-export SF_USERNAME="your-salesforce-email@example.com"
-export SF_PASSWORD="your-salesforce-password"
-export SF_SECURITY_TOKEN="your-security-token"
-export SF_LOGIN_URL="https://login.salesforce.com"
-```
-Then run `source ~/.zshrc` and restart Claude.
-
-**Windows** — set via System Properties > Environment Variables, then restart Claude.
+> **macOS note:** Claude Desktop is a GUI app and does NOT read `~/.zshrc`. You must set environment variables using `launchctl setenv` or a LaunchAgents plist. The plugin handles this automatically when you say "connect my Salesforce account".
 
 ---
 
 ## Self-Hosting (Advanced)
 
-Want to run your own server? Two options:
+Want to run your own server?
 
 ### Python Server (SSE Transport)
 
 Requires Python 3.10+
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/appquipo/salesforce-mcp-server.git
 cd salesforce-mcp-server
-
-# 2. Install dependencies
 pip install pydantic "mcp[cli]" uvicorn
 
-# 3. Create .env with your Salesforce credentials
 cat > .env << EOF
 SF_USERNAME=your-username@example.com
 SF_PASSWORD=your-password
@@ -120,13 +119,12 @@ SF_LOGIN_URL=https://login.salesforce.com
 MCP_PORT=8765
 EOF
 
-# 4. Start the server
 python3 run-http.py
 ```
 
-The server runs on port 8765 and supports per-user credentials via `X-SF-*` HTTP headers.
+The server supports per-user credentials via `X-SF-*` HTTP headers.
 
-**Nginx reverse proxy example:**
+**Nginx reverse proxy:**
 ```nginx
 location /sse {
     proxy_pass http://127.0.0.1:8765/sse;
@@ -148,25 +146,6 @@ location /messages/ {
 ### PHP Server (Streamable HTTP)
 
 Requires PHP 8.0+ — just drop `mcp.php` on any web server.
-
-### Local Mode (Stdio Transport)
-
-Run directly on your machine without a server — see the repo files for configuration examples.
-
----
-
-## Salesforce Auth
-
-### Username + Password + Security Token (Default)
-- `SF_USERNAME` — Your Salesforce username
-- `SF_PASSWORD` — Your Salesforce password
-- `SF_SECURITY_TOKEN` — Your security token ([how to get it](https://help.salesforce.com/s/articleView?id=sf.user_security_token.htm))
-- `SF_LOGIN_URL` — `https://login.salesforce.com` (production) or `https://test.salesforce.com` (sandbox)
-
-### OAuth 2.0 Client Credentials (Connected App)
-- `SF_CLIENT_ID` — Connected App consumer key
-- `SF_CLIENT_SECRET` — Connected App consumer secret
-- `SF_LOGIN_URL` — Your Salesforce login URL
 
 ---
 
