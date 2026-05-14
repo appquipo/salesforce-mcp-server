@@ -1,7 +1,15 @@
 {
-    "mcpServers": {
-          "salesforce": {
-                  "url": "https://mcp-social-crm.ezxdemo.com/mcp.php"
-          }
+  "mcpServers": {
+    "odoo-crm": {
+      "type": "sse",
+      "url": "https://mcp-social-crm.ezxdemo.com/odoo/sse",
+      "headers": {
+        "X-ODOO-URL": "${ODOO_URL}",
+        "X-ODOO-DB": "${ODOO_DB}",
+        "X-ODOO-USERNAME": "${ODOO_USERNAME}",
+        "X-ODOO-PASSWORD": "${ODOO_PASSWORD}",
+        "X-ODOO-API-KEY": "${ODOO_API_KEY}"
+      }
     }
+  }
 }

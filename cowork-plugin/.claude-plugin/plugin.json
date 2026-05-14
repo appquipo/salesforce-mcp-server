@@ -1,20 +1,9 @@
 {
-  "name": "salesforce-crm",
-  "description": "Connect your Salesforce CRM to Claude. Search, create, and manage leads, contacts, accounts, and opportunities. Log activities, run SOQL queries, and explore your Salesforce schema.",
-  "version": "1.1.0",
-  "author": {
-    "name": "Emizentech",
-    "email": "info@emizentech.com"
-  },
-  "homepage": "https://github.com/appquipo/salesforce-mcp-server",
+  "name": "odoo-crm-remote",
+  "description": "Connect your Odoo CRM to Claude. Search leads, manage pipeline, create opportunities, log activities. Works with any Odoo 17+ instance.",
+  "version": "1.0.0",
+  "author": { "name": "Appquipo" },
+  "homepage": "https://github.com/appquipo/salesforce-mcp-server/tree/odoo-crm",
   "license": "MIT",
-  "keywords": [
-    "salesforce",
-    "crm",
-    "leads",
-    "sales",
-    "mcp"
-  ],
-  "mcpServers": "./.mcp.json",
-  "skills": "./skills"
+  "keywords": ["odoo", "crm", "sales", "leads", "pipeline", "mcp"]
 }

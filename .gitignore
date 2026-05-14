@@ -1,6 +1,7 @@
+node_modules/
 .env
 *.log
-/vendor/
 .DS_Store
-Thumbs.db
-sf_mcp_session_*.json
+__pycache__/
+venv/
+*.pyc
