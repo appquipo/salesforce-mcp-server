@@ -1,46 +1,25 @@
-# Odoo CRM Plugin for Claude
+# Odoo CRM MCP Server
 
-Connect your Odoo CRM to Claude. No coding required. Works with any Odoo 17+ instance.
+Connect your Odoo CRM to Claude — manage leads, pipeline, contacts, and activities through chat.
 
-## How to Use
+## Quick Install (for Claude Desktop / Cowork)
 
-### 1. Download & Install
+1. Download **[odoo-crm-remote.plugin](https://github.com/appquipo/salesforce-mcp-server/releases/latest)**
+2. Double-click the file, then press Send in Claude chat
+3. Click "Accept" when prompted
 
-Download **[odoo-crm-remote.plugin](./odoo-crm-remote.plugin)** and double-click to install in Claude.
+That's it! When you first use it, Claude will ask for your Odoo login details right in the chat. No terminal, no environment variables, no technical setup needed.
 
-### 2. Connect Your Account
+## What It Does
 
-Open a new chat in Claude and say:
+- Search and manage CRM leads and opportunities
+- View your sales pipeline
+- Create leads, log activities, add notes
+- Search contacts
+- Track follow-ups and deadlines
 
-> **"I want to connect my Odoo CRM"**
+## Server
 
-Claude will ask for your login details one by one:
-- Your Odoo URL (e.g., https://mycompany.odoo.com)
-- Your database name
-- Your email/username
-- Your password
+The MCP server runs at `https://mcp-social-crm.ezxdemo.com/odoo/sse`
 
-Claude handles everything else automatically. No terminal, no code.
-
-### 3. Restart Claude
-
-After Claude sets things up, just **quit Claude (Cmd+Q)** and reopen it. Done!
-
-## What You Can Do
-
-Just chat naturally:
-- "Show me my recent leads"
-- "Create a new lead for Sarah at TechCorp"
-- "What are my pipeline stages?"
-- "Schedule a follow-up call with the Acme lead"
-- "Log a note on the Dyson opportunity"
-
-## Troubleshooting
-
-- **Not connecting?** Make sure you restarted Claude after setup. On some Macs, a full reboot helps.
-- **Wrong credentials?** Say "I want to reconnect my Odoo CRM" and Claude will update your details.
-- **Database name?** It usually matches your Odoo subdomain (e.g., if URL is https://myco.odoo.com, database is "myco").
-
----
-
-> Also available: [Salesforce CRM Plugin](https://github.com/appquipo/salesforce-mcp-server/tree/salesforce)
+Your credentials are entered through Claude chat and stored securely on the server — you only need to set up once.
