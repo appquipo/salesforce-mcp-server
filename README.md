@@ -1,122 +1,73 @@
-# Salesforce MCP Server for Claude
+# Salesforce CRM Plugin for Claude
 
-Connect your Salesforce CRM to Claude - search, create, and manage leads, contacts, accounts, and opportunities through natural conversation.
+Connect your Salesforce CRM to Claude in 3 simple steps. No coding required.
 
-**Live endpoint:** `https://mcp-social-crm.ezxdemo.com/salesforce/sse`
+## Setup (3 minutes)
 
-> Looking for the Odoo CRM server? Switch to the [`odoo-crm` branch](https://github.com/appquipo/salesforce-mcp-server/tree/odoo-crm).
+### Step 1: Download & Install
 
-## Quick Start
+Download **[salesforce-crm.plugin](./salesforce-crm.plugin)** and double-click it to install in Claude.
 
-### Option 1: Install the Cowork Plugin
+### Step 2: Set Your Login Details
 
-1. Download `salesforce-crm.plugin` from the [latest release](https://github.com/appquipo/salesforce-mcp-server/releases/latest)
-2. Double-click to install in Claude Desktop / Cowork
-3. Open a new chat and say: **"I want to connect my Salesforce account"**
-4. Claude will ask for your credentials and handle the rest
+Open **Terminal** (Mac) or **PowerShell** (Windows) and paste these commands with your own Salesforce credentials:
 
-### Option 2: Manual .mcp.json Setup
-
-Add this to your `.mcp.json` (Claude Code or Cowork plugin):
-
-```json
-{
-  "mcpServers": {
-    "salesforce-crm": {
-      "type": "sse",
-      "url": "https://mcp-social-crm.ezxdemo.com/salesforce/sse",
-      "headers": {
-        "X-SF-USERNAME": "${SF_USERNAME}",
-        "X-SF-PASSWORD": "${SF_PASSWORD}",
-        "X-SF-SECURITY-TOKEN": "${SF_SECURITY_TOKEN}",
-        "X-SF-LOGIN-URL": "${SF_LOGIN_URL}"
-      }
-    }
-  }
-}
-```
-
-Then set environment variables:
-
+**Mac:**
 ```bash
-export SF_USERNAME="your-salesforce-email@example.com"
-export SF_PASSWORD="your-salesforce-password"
-export SF_SECURITY_TOKEN="your-security-token"
-export SF_LOGIN_URL="https://login.salesforce.com"
+echo 'export SF_USERNAME="your-salesforce-email@example.com"' >> ~/.zshrc
+echo 'export SF_PASSWORD="your-salesforce-password"' >> ~/.zshrc
+echo 'export SF_SECURITY_TOKEN="your-security-token"' >> ~/.zshrc
+echo 'export SF_LOGIN_URL="https://login.salesforce.com"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
-**How to get your Security Token:** In Salesforce, go to Settings > My Personal Information > Reset My Security Token. The token is emailed to you.
-
-## Available Tools
-
-| Tool | Description |
-|------|-------------|
-| `sf_search_leads` | Search leads with filters |
-| `sf_get_lead` | Get lead by ID |
-| `sf_create_lead` | Create a new lead |
-| `sf_update_lead` | Update lead fields |
-| `sf_search_contacts` | Search contacts |
-| `sf_search_accounts` | Search accounts |
-| `sf_search_opportunities` | Search opportunities |
-| `sf_create_opportunity` | Create opportunity |
-| `sf_soql_query` | Run custom SOQL queries |
-| `sf_describe_object` | Describe object schema |
-| `sf_create_task` | Create a task |
-| `sf_log_call` | Log a call activity |
-
-## Architecture
-
-```
-Claude (Cowork/Claude Code)
-    |
-    | SSE + X-SF-* headers
-    v
-nginx (mcp-social-crm.ezxdemo.com/salesforce/)
-    |
-    | proxy_pass :8765
-    v
-run-http.py (FastMCP + Uvicorn)
-    |  SFCredentialsMiddleware extracts headers -> env vars
-    v
-mcp-server.py (12 Salesforce tools)
-    |
-    | simple_salesforce
-    v
-Salesforce REST API
+**Windows (PowerShell as Admin):**
+```powershell
+[System.Environment]::SetEnvironmentVariable("SF_USERNAME", "your-salesforce-email@example.com", "User")
+[System.Environment]::SetEnvironmentVariable("SF_PASSWORD", "your-salesforce-password", "User")
+[System.Environment]::SetEnvironmentVariable("SF_SECURITY_TOKEN", "your-security-token", "User")
+[System.Environment]::SetEnvironmentVariable("SF_LOGIN_URL", "https://login.salesforce.com", "User")
 ```
 
-Per-user credentials are passed via HTTP headers on every SSE connection. No credentials are stored on the server.
+**How to get your Security Token:**
+1. Log into Salesforce
+2. Click your profile icon (top right) > **Settings**
+3. Left sidebar: **My Personal Information** > **Reset My Security Token**
+4. Click "Reset Security Token" - check your email for the token
 
-## Self-Hosting
+### Step 3: Restart Claude
 
-To host your own instance:
+Quit Claude completely (Cmd+Q on Mac, close on Windows) and reopen it. That\'s it!
 
-```bash
-# Clone and install
-git clone https://github.com/appquipo/salesforce-mcp-server.git
-cd salesforce-mcp-server
-pip install mcp uvicorn simple_salesforce
+## Try It
 
-# Configure defaults (optional)
-cp .env.example .env
-# Edit .env with your Salesforce credentials
+Open a new chat and say:
+- "Show me my recent leads"
+- "Create a new lead for John Smith at Acme Corp"
+- "Search for opportunities closing this month"
+- "Log a call with the marketing team"
 
-# Run
-python3 run-http.py
-# Listening on port 8765
-```
+## What You Can Do
 
-### Requirements
-
-- Python 3.8+
-- `mcp>=1.0.0`, `uvicorn>=0.30.0`, `simple_salesforce`
+| Command | What it does |
+|---------|-------------|
+| Search leads | Find leads by name, company, email, or status |
+| Create leads | Add new leads with contact info |
+| Update leads | Change lead status, score, or details |
+| Search contacts | Find contacts across your org |
+| Search accounts | Look up account information |
+| Search opportunities | Check your pipeline and deals |
+| Run SOQL queries | Custom Salesforce queries |
+| Log calls & tasks | Record activities on records |
 
 ## Troubleshooting
 
-- **421 Misdirected Request**: The server uses `enable_dns_rebinding_protection=False` in `TransportSecuritySettings` because it runs behind an nginx reverse proxy.
-- **Credentials not working**: Make sure your Security Token is current. Reset it from Salesforce Settings if needed.
-- **macOS GUI apps**: If using Claude Desktop (not terminal), you may need to set env vars via a LaunchAgent plist so the GUI app picks them up.
+**"Authentication failed"** - Double-check your username, password, and security token. Reset your token from Salesforce Settings if needed.
 
-## License
+**"Tools not available"** - Make sure you restarted Claude after setting your credentials. On Mac, sometimes a full reboot is needed.
 
-MIT
+**Sandbox account?** - Change your login URL to `https://test.salesforce.com`
+
+---
+
+> Also available: [Odoo CRM Plugin](https://github.com/appquipo/salesforce-mcp-server/tree/odoo-crm)
