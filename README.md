@@ -1,117 +1,78 @@
-# Odoo CRM MCP Server for Claude
+# Odoo CRM Plugin for Claude
 
-Connect your Odoo CRM to Claude - search leads, manage your pipeline, create opportunities, log activities, and more through natural conversation.
+Connect your Odoo CRM to Claude in 3 simple steps. No coding required. Works with any Odoo 17+ instance.
 
-**Live endpoint:** `https://mcp-social-crm.ezxdemo.com/odoo/sse`
+## Setup (3 minutes)
 
-> Looking for the Salesforce server? Switch to the [`salesforce` branch](https://github.com/appquipo/salesforce-mcp-server/tree/salesforce).
+### Step 1: Download & Install
 
-## Quick Start
+Download **[odoo-crm-remote.plugin](./odoo-crm-remote.plugin)** and double-click it to install in Claude.
 
-### Option 1: Install the Cowork Plugin
+### Step 2: Set Your Login Details
 
-1. Download `odoo-crm-remote.plugin` from the [latest release](https://github.com/appquipo/salesforce-mcp-server/releases/latest)
-2. Double-click to install in Claude Desktop / Cowork
-3. Open a new chat and say: **"I want to connect my Odoo CRM"**
-4. Claude will ask for your Odoo URL, database, and credentials
+Open **Terminal** (Mac) or **PowerShell** (Windows) and paste these commands with your own Odoo credentials:
 
-### Option 2: Manual .mcp.json Setup
-
-Add this to your `.mcp.json` (Claude Code or Cowork plugin):
-
-```json
-{
-  "mcpServers": {
-    "odoo-crm": {
-      "type": "sse",
-      "url": "https://mcp-social-crm.ezxdemo.com/odoo/sse",
-      "headers": {
-        "X-ODOO-URL": "${ODOO_URL}",
-        "X-ODOO-DB": "${ODOO_DB}",
-        "X-ODOO-USERNAME": "${ODOO_USERNAME}",
-        "X-ODOO-PASSWORD": "${ODOO_PASSWORD}",
-        "X-ODOO-API-KEY": "${ODOO_API_KEY}"
-      }
-    }
-  }
-}
-```
-
-Then set environment variables:
-
+**Mac:**
 ```bash
-export ODOO_URL="https://your-company.odoo.com"
-export ODOO_DB="your-database-name"
-export ODOO_USERNAME="your-email@example.com"
-export ODOO_PASSWORD="your-password"
-export ODOO_API_KEY=""  # Optional: use API key instead of password
+echo 'export ODOO_URL="https://your-company.odoo.com"' >> ~/.zshrc
+echo 'export ODOO_DB="your-database-name"' >> ~/.zshrc
+echo 'export ODOO_USERNAME="your-email@example.com"' >> ~/.zshrc
+echo 'export ODOO_PASSWORD="your-password"' >> ~/.zshrc
+echo 'export ODOO_API_KEY=""' >> ~/.zshrc
+source ~/.zshrc
 ```
 
-**How to find your Database Name:** Check your Odoo URL or go to Settings > Database in your Odoo instance.
-
-## Available Tools
-
-| Tool | Description |
-|------|-------------|
-| `odoo_test_connection` | Verify Odoo credentials |
-| `odoo_search_leads` | Search leads/opportunities with filters |
-| `odoo_get_lead` | Get lead details by ID |
-| `odoo_create_lead` | Create a new lead |
-| `odoo_update_lead` | Update lead fields |
-| `odoo_get_pipeline_stages` | List pipeline stages |
-| `odoo_convert_to_opportunity` | Convert lead to opportunity |
-| `odoo_create_activity` | Schedule an activity |
-| `odoo_get_activities` | Get activities for a lead |
-| `odoo_log_note` | Log a note on a lead |
-| `odoo_search_contacts` | Search contacts/partners |
-| `odoo_get_lead_messages` | Get lead message history |
-
-## Architecture
-
-```
-Claude (Cowork/Claude Code)
-    |
-    | SSE + X-ODOO-* headers
-    v
-nginx (mcp-social-crm.ezxdemo.com/odoo/)
-    |
-    | proxy_pass :8766
-    v
-run-http.py (FastMCP + Uvicorn)
-    |  OdooCredentialsMiddleware extracts headers -> env vars
-    v
-Odoo JSON-RPC API (17+)
+**Windows (PowerShell as Admin):**
+```powershell
+[System.Environment]::SetEnvironmentVariable("ODOO_URL", "https://your-company.odoo.com", "User")
+[System.Environment]::SetEnvironmentVariable("ODOO_DB", "your-database-name", "User")
+[System.Environment]::SetEnvironmentVariable("ODOO_USERNAME", "your-email@example.com", "User")
+[System.Environment]::SetEnvironmentVariable("ODOO_PASSWORD", "your-password", "User")
+[System.Environment]::SetEnvironmentVariable("ODOO_API_KEY", "", "User")
 ```
 
-Per-user credentials are passed via HTTP headers on every SSE connection. No credentials are stored on the server.
+**How to find your Database Name:**
+- Check your Odoo URL (the subdomain is usually the database name)
+- Or in Odoo: Settings > Database
 
-## Self-Hosting
+**API Key (optional):** If you prefer API key instead of password:
+- In Odoo: Settings > Users > your user > Preferences > API Keys
+- Click "New API Key", copy it, and put it in ODOO_API_KEY
 
-```bash
-# Clone
-git clone -b odoo-crm https://github.com/appquipo/salesforce-mcp-server.git odoo-crm-mcp
-cd odoo-crm-mcp
+### Step 3: Restart Claude
 
-# Install
-pip install mcp uvicorn
+Quit Claude completely (Cmd+Q on Mac, close on Windows) and reopen it. That\'s it!
 
-# Run
-python3 run-http.py
-# Listening on port 8766
-```
+## Try It
 
-### Requirements
+Open a new chat and say:
+- "Show me my recent leads"
+- "Create a new lead for Sarah at TechCorp"
+- "What are my pipeline stages?"
+- "Schedule a call with the Acme lead for tomorrow"
 
-- Python 3.8+
-- `mcp>=1.0.0`, `uvicorn>=0.30.0`
-- Odoo 17+ instance with JSON-RPC API access
+## What You Can Do
+
+| Command | What it does |
+|---------|-------------|
+| Search leads | Find leads by name, company, or stage |
+| Create leads | Add new leads with contact info |
+| Update leads | Change stage, priority, or details |
+| Pipeline stages | See all your pipeline stages |
+| Convert to opportunity | Move a lead to opportunity |
+| Schedule activities | Plan calls, meetings, emails, to-dos |
+| Log notes | Add notes to any lead |
+| Search contacts | Find contacts and partners |
+| Message history | See all messages on a lead |
 
 ## Troubleshooting
 
-- **421 Misdirected Request**: The server uses `enable_dns_rebinding_protection=False` because it runs behind an nginx reverse proxy.
-- **Authentication failed**: Verify your Odoo URL, database name, and credentials. Try logging into the Odoo web UI with the same credentials.
-- **API key vs password**: You can use either. Set `ODOO_API_KEY` for key-based auth, or `ODOO_PASSWORD` for password auth.
+**"Authentication failed"** - Double-check your Odoo URL, database name, username, and password. Try logging into Odoo web with the same credentials.
 
-## License
+**"Tools not available"** - Make sure you restarted Claude after setting your credentials.
 
-MIT
+**API Key vs Password** - You can use either one. If using API key, set it in ODOO_API_KEY and leave ODOO_PASSWORD empty.
+
+---
+
+> Also available: [Salesforce CRM Plugin](https://github.com/appquipo/salesforce-mcp-server/tree/salesforce)
